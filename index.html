@@ -93,9 +93,13 @@
       const data = await res.json();
 
       if (data.image) {
-        document.getElementById("img").src = "data:image/png;base64," + data.image;
-      } else {
-        alert("Ошибка при генерации");
+  const imgEl = document.getElementById("img");
+  imgEl.classList.remove("loaded"); // сброс анимации
+  imgEl.src = "data:image/png;base64," + data.image;
+  imgEl.onload = () => imgEl.classList.add("loaded"); // плавно показываем
+} else {
+  alert("Ошибка при генерации: " + (data.error || "неизвестная"));
+}
       }
     };
   </script>
