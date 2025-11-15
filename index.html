@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Генерация картинок</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    #img { margin-top: 20px; width: 100%; }
+  </style>
+</head>
+<body>
+
+  <h2>Создание картинки через Gemini</h2>
+
+  <input id="prompt" type="text" style="width:100%; padding:8px;" placeholder="Опиши картинку">
+  <button id="btn" style="margin-top:10px; padding:10px;">Создать</button>
+
+  <img id="img" />
+
+  <script>
+    document.getElementById("btn").onclick = async () => {
+      const prompt = document.getElementById("prompt").value;
+
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await res.json();
+
+      if (data.image) {
+        document.getElementById("img").src = "data:image/png;base64," + data.image;
+      } else {
+        alert("Ошибка при генерации");
+      }
+    };
+  </script>
+</body>
+</html>
