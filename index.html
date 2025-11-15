@@ -1,12 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Генерация картинок</title>
-  <style>
-    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-    #img { margin-top: 20px; width: 100%; }
-  </style>
+ <meta charset="UTF-8">
+<title>Генерация картинок</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    min-height: 100vh;
+  }
+
+  h2 {
+    color: #00796b;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  input {
+    width: 100%;
+    max-width: 600px;
+    padding: 12px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #b2dfdb;
+    margin-bottom: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  input:focus {
+    border-color: #00796b;
+  }
+
+  button {
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00796b;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  button:hover {
+    background-color: #004d40;
+    transform: scale(1.05);
+  }
+
+  #img {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  #img.loaded {
+    opacity: 1;
+  }
+</style>
 </head>
 <body>
 
