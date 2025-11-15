@@ -1,107 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
- <meta charset="UTF-8">
-<title>Генерация картинок</title>
+  <meta charset="UTF-8">
+  <title>Генерация картинок</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(to bottom, #e0f7fa, #ffffff);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 20px;
-    min-height: 100vh;
-  }
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+      min-height: 100vh;
+    }
 
-  h2 {
-    color: #00796b;
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
+    h2 {
+      color: #00796b;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
 
-  input {
-    width: 100%;
-    max-width: 600px;
-    padding: 12px 15px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #b2dfdb;
-    margin-bottom: 15px;
-    outline: none;
-    transition: border-color 0.3s;
-  }
+    input {
+      width: 100%;
+      max-width: 600px;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #b2dfdb;
+      margin-bottom: 15px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
 
-  input:focus {
-    border-color: #00796b;
-  }
+    input:focus {
+      border-color: #00796b;
+    }
 
-  button {
-    padding: 12px 25px;
-    font-size: 16px;
-    border: none;
-    border-radius: 8px;
-    background-color: #00796b;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-  }
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #00796b;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
 
-  button:hover {
-    background-color: #004d40;
-    transform: scale(1.05);
-  }
+    button:hover {
+      background-color: #004d40;
+      transform: scale(1.05);
+    }
 
-  #img {
-    margin-top: 20px;
-    width: 100%;
-    max-width: 600px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
+    #img {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
 
-  #img.loaded {
-    opacity: 1;
-  }
-</style>
+    #img.loaded {
+      opacity: 1;
+    }
+
+    /* Подсказка для пользователя */
+    .hint {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
 
   <h2>Создание картинки через Gemini</h2>
 
-  <input id="prompt" type="text" style="width:100%; padding:8px;" placeholder="Опиши картинку">
-  <button id="btn" style="margin-top:10px; padding:10px;">Создать</button>
+  <input id="prompt" type="text" placeholder="Опиши картинку (например: кот в шапке Санты)">
+  <button id="btn">Создать</button>
+
+  <div class="hint">Попробуй написать: «футуристический город», «робот-повар», «лес в тумане»</div>
 
   <img id="img" />
 
   <script>
     document.getElementById("btn").onclick = async () => {
-      const prompt = document.getElementById("prompt").value;
+      const prompt = document.getElementById("prompt").value.trim();
+      if (!prompt) {
+        alert("Введите текст для генерации картинки");
+        return;
+      }
 
-      const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ prompt })
-      });
+      const imgEl = document.getElementById("img");
+      imgEl.classList.remove("loaded");
+      imgEl.src = "";
 
-      const data = await res.json();
+      try {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ prompt })
+        });
 
-      if (data.image) {
-  const imgEl = document.getElementById("img");
-  imgEl.classList.remove("loaded"); // сброс анимации
-  imgEl.src = "data:image/png;base64," + data.image;
-  imgEl.onload = () => imgEl.classList.add("loaded"); // плавно показываем
-} else {
-  alert("Ошибка при генерации: " + (data.error || "неизвестная"));
-}
+        const data = await res.json();
+
+        if (data.image) {
+          imgEl.src = "data:image/png;base64," + data.image;
+          imgEl.onload = () => imgEl.classList.add("loaded");
+        } else {
+          alert("Ошибка при генерации: " + (data.error || "неизвестная"));
+        }
+      } catch (e) {
+        alert("Ошибка сети или сервера: " + e.message);
       }
     };
   </script>
+
 </body>
 </html>
