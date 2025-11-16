@@ -1,211 +1,297 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>KIBERone Gemini Генератор</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* Общие стили */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 40px 20px;
-      color: #333;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 50px;
-      gap: 15px;
-      flex-wrap: wrap;
-      animation: fadeInDown 1s ease forwards;
-    }
-    header img {
-      width: 60px;
-      height: auto;
-    }
-    header h1 {
-      font-size: 32px;
-      color: #fff;
-      font-weight: 700;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    }
+<meta charset="UTF-8">
+<title>KIBERone Gemini Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ========================== */
+/* Общие стили */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  color: #333;
+}
 
-    h2 {
-      color: #fff;
-      font-size: 24px;
-      margin-bottom: 25px;
-      text-align: center;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-      animation: fadeIn 1.2s ease forwards;
-    }
+/* ========================== */
+/* Анимации */
+@keyframes fadeInDown {
+  0% {opacity:0; transform:translateY(-50px);}
+  100% {opacity:1; transform:translateY(0);}
+}
+@keyframes fadeIn {
+  0% {opacity:0;}
+  100% {opacity:1;}
+}
+@keyframes float {
+  0% { transform: translateY(0px);}
+  50% { transform: translateY(-10px);}
+  100% { transform: translateY(0px);}
+}
 
-    /* Контейнер ввода */
-    .input-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      max-width: 600px;
-      animation: fadeIn 1.5s ease forwards;
-    }
-    input {
-      width: 100%;
-      padding: 15px 20px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    input:focus {
-      transform: scale(1.02);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    }
-    button {
-      background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-      border: none;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 600;
-      padding: 15px 30px;
-      border-radius: 12px;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-    }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-      background: linear-gradient(135deg, #ff7eb3 0%, #ff758c 100%);
-    }
+/* ========================== */
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+  gap: 20px;
+  flex-wrap: wrap;
+  animation: fadeInDown 1s ease forwards;
+}
+header img {
+  width: 70px;
+  height: auto;
+  animation: float 3s ease-in-out infinite;
+}
+header h1 {
+  font-size: 36px;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+}
 
-    /* Подсказка */
-    .hint {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #fff;
-      text-align: center;
-      max-width: 600px;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-      animation: fadeIn 1.7s ease forwards;
-    }
+/* ========================== */
+/* Заголовок */
+h2 {
+  color: #fff;
+  font-size: 26px;
+  margin: 30px 0 20px 0;
+  text-align: center;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  animation: fadeIn 1.2s ease forwards;
+}
 
-    /* Контейнер изображения */
-    .img-wrapper {
-      margin-top: 30px;
-      width: 100%;
-      max-width: 600px;
-      background: rgba(255,255,255,0.9);
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      display: flex;
-      justify-content: center;
-      animation: fadeIn 2s ease forwards;
-    }
-    #img {
-      border-radius: 15px;
-      max-width: 100%;
-      opacity: 0;
-      transition: opacity 0.5s;
-    }
-    #img.loaded {
-      opacity: 1;
-    }
+/* ========================== */
+/* Контейнер ввода */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  animation: fadeIn 1.5s ease forwards;
+}
+input {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+input:focus {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+button {
+  background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 16px 35px;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 7px 20px rgba(0,0,0,0.25);
+  transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  background: linear-gradient(135deg, #ff7eb3 0%, #ff758c 100%);
+}
 
-    footer {
-      margin-top: 50px;
-      font-size: 14px;
-      color: #fff;
-      text-align: center;
-      width: 100%;
-      max-width: 600px;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-      animation: fadeIn 2.2s ease forwards;
-    }
+/* ========================== */
+/* Подсказка */
+.hint {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+  max-width: 600px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  animation: fadeIn 1.7s ease forwards;
+}
 
-    /* Анимации */
-    @keyframes fadeInDown {
-      0% { opacity: 0; transform: translateY(-30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
+/* ========================== */
+/* Контейнер изображения */
+.img-wrapper {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 650px;
+  background: rgba(255,255,255,0.95);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+  display: flex;
+  justify-content: center;
+  animation: fadeIn 2s ease forwards;
+}
+#img {
+  border-radius: 15px;
+  max-width: 100%;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.5s, transform 0.5s;
+}
+#img.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
 
-    /* Адаптив */
-    @media(max-width: 480px){
-      header h1 { font-size: 24px; }
-      h2 { font-size: 20px; }
-      button { font-size: 16px; padding: 12px 25px; }
-    }
-  </style>
+/* ========================== */
+/* Footer */
+footer {
+  margin-top: 50px;
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+  animation: fadeIn 2.2s ease forwards;
+}
+
+/* ========================== */
+/* Частицы на фоне */
+#particles {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+  pointer-events:none;
+}
+
+/* ========================== */
+/* Адаптив */
+@media(max-width:480px){
+  header h1 { font-size:28px; }
+  h2 { font-size:22px; }
+  button { font-size:16px; padding:12px 25px; }
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <img src="https://cdn-icons-png.flaticon.com/512/2910/2910762.png" alt="Логотип">
-    <h1>KIBERone Gemini</h1>
-  </header>
+<canvas id="particles"></canvas>
 
-  <h2>Создай картинку с помощью Gemini</h2>
+<header>
+  <img src="https://cdn-icons-png.flaticon.com/512/2910/2910762.png" alt="Логотип KIBERone">
+  <h1>KIBERone Gemini</h1>
+</header>
 
-  <div class="input-container">
-    <input id="prompt" type="text" placeholder="Например: кот в шапке Санты" />
-    <button id="btn">Создать</button>
-  </div>
+<h2>Создай картинку с помощью Gemini</h2>
 
-  <div class="hint">Попробуй: «футуристический город», «робот-повар», «лес в тумане»</div>
+<div class="input-container">
+  <input id="prompt" type="text" placeholder="Например: кот в шапке Санты">
+  <button id="btn">Создать</button>
+</div>
 
-  <div class="img-wrapper">
-    <img id="img" alt="Сгенерированное изображение" />
-  </div>
+<div class="hint">Попробуй: «футуристический город», «робот-повар», «лес в тумане»</div>
 
-  <footer>© 2025 KIBERone — все права защищены</footer>
+<div class="img-wrapper">
+  <img id="img" alt="Сгенерированное изображение">
+</div>
 
-  <script>
-    const btn = document.getElementById("btn");
-    const imgEl = document.getElementById("img");
+<footer>© 2025 KIBERone — все права защищены</footer>
 
-    btn.onclick = async () => {
-      const prompt = document.getElementById("prompt").value.trim();
-      if(!prompt) return alert("Введите текст для генерации картинки");
+<script>
+// ==========================
+// Генерация картинок
+const btn = document.getElementById("btn");
+const imgEl = document.getElementById("img");
+btn.onclick = async () => {
+  const prompt = document.getElementById("prompt").value.trim();
+  if(!prompt) return alert("Введите текст для генерации картинки");
 
-      imgEl.classList.remove("loaded");
-      imgEl.src = "";
+  imgEl.classList.remove("loaded");
+  imgEl.src = "";
 
-      try {
-        const res = await fetch("/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt })
-        });
-        const data = await res.json();
-        if(data.image){
-          imgEl.src = "data:image/png;base64," + data.image;
-          imgEl.onload = () => imgEl.classList.add("loaded");
-        } else {
-          alert("Ошибка генерации: " + (data.error || "неизвестная"));
-        }
-      } catch(e){
-        alert("Ошибка сети или сервера: " + e.message);
-      }
-    };
-  </script>
+  try{
+    const res = await fetch("/api/generate",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if(data.image){
+      imgEl.src = "data:image/png;base64," + data.image;
+      imgEl.onload = ()=>imgEl.classList.add("loaded");
+    } else {
+      alert("Ошибка генерации: " + (data.error || "неизвестная"));
+    }
+  } catch(e){
+    alert("Ошибка сети или сервера: " + e.message);
+  }
+};
+
+// ==========================
+// Частицы на фоне
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+let particlesArray;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+class Particle {
+  constructor(){
+    this.x = Math.random()*canvas.width;
+    this.y = Math.random()*canvas.height;
+    this.size = Math.random()*3 + 1;
+    this.speedX = Math.random()*1 - 0.5;
+    this.speedY = Math.random()*1 - 0.5;
+  }
+  update(){
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if(this.x>canvas.width) this.x=0;
+    if(this.x<0) this.x=canvas.width;
+    if(this.y>canvas.height) this.y=0;
+    if(this.y<0) this.y=canvas.height;
+  }
+  draw(){
+    ctx.fillStyle="rgba(255,255,255,0.7)";
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+function initParticles(){
+  particlesArray = [];
+  for(let i=0;i<100;i++){
+    particlesArray.push(new Particle());
+  }
+}
+function animateParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particlesArray.forEach(p=>{
+    p.update();
+    p.draw();
+  });
+  requestAnimationFrame(animateParticles);
+}
+initParticles();
+animateParticles();
+window.addEventListener('resize',()=>{
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  initParticles();
+});
+</script>
 
 </body>
 </html>
