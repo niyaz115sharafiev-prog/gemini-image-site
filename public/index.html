@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Генерация картинок — Gemini</title>
-
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -18,7 +16,6 @@
       min-height: 100vh;
       margin: 0;
     }
-
     header {
       width: 100%;
       max-width: 600px;
@@ -27,26 +24,22 @@
       justify-content: center;
       margin-bottom: 30px;
     }
-
     header img {
       width: 50px;
       height: auto;
       margin-right: 15px;
     }
-
     header h1 {
       color: #00796b;
       font-size: 28px;
       margin: 0;
       font-weight: 600;
     }
-
     h2 {
       color: #00796b;
       font-weight: 600;
       margin-bottom: 20px;
     }
-
     .input-container {
       display: flex;
       flex-direction: column;
@@ -54,7 +47,6 @@
       width: 100%;
       max-width: 600px;
     }
-
     input {
       width: 100%;
       padding: 12px 15px;
@@ -65,11 +57,9 @@
       outline: none;
       transition: border-color 0.3s;
     }
-
     input:focus {
       border-color: #00796b;
     }
-
     button {
       padding: 12px 25px;
       font-size: 16px;
@@ -80,12 +70,10 @@
       cursor: pointer;
       transition: background-color 0.3s, transform 0.2s;
     }
-
     button:hover {
       background-color: #004d40;
       transform: scale(1.05);
     }
-
     .hint {
       margin-top: 10px;
       font-size: 14px;
@@ -93,7 +81,6 @@
       text-align: center;
       max-width: 600px;
     }
-
     .img-wrapper {
       margin-top: 25px;
       width: 100%;
@@ -105,18 +92,15 @@
       display: flex;
       justify-content: center;
     }
-
     #img {
       border-radius: 12px;
       max-width: 100%;
       opacity: 0;
       transition: opacity 0.5s;
     }
-
     #img.loaded {
       opacity: 1;
     }
-
     footer {
       margin-top: 40px;
       font-size: 14px;
@@ -130,8 +114,7 @@
 <body>
 
   <header>
-    <!-- Логотип из локального файла -->
-    <img src="logo.jpg" alt="Логотип KIBERone">
+    <img src="images/logo.jpg" alt="Логотип KIBERone">
     <h1>KIBERone Gemini Генератор</h1>
   </header>
 
