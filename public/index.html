@@ -1,33 +1,117 @@
-export default async function handler(req, res) {
-  try {
-    const { prompt } = await req.json();
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Генерация картинок</title>
 
-    const apiKey = process.env.GEMINI_API_KEY;
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateImage?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: { text: prompt },
-          size: "1024x1024"
-        })
-      }
-    );
-
-    const json = await response.json();
-
-    // Проверка на существование картинки
-    if (!json.generatedImages || !json.generatedImages[0] || !json.generatedImages[0].imageData) {
-      return res.status(500).json({ error: "Картинка не сгенерирована" });
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+      min-height: 100vh;
     }
 
-    const base64 = json.generatedImages[0].imageData;
+    h2 {
+      color: #00796b;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
 
-    res.status(200).json({ image: base64 });
-  } catch (error) {
-    console.error("Ошибка:", error);
-    res.status(500).json({ error: "server error" });
+    input {
+      width: 100%;
+      max-width: 600px;
+      padding: 12px 15px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #b2dfdb;
+      margin-bottom: 15px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus { border-color: #00796b; }
+
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #00796b;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #004d40;
+      transform: scale(1.05);
+    }
+
+    #img {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #img.loaded { opacity: 1; }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Создание картинки через Gemini</h2>
+
+<input id="prompt" type="text" placeholder="Опиши картинку (например: кот в шапке Санты)">
+<button id="btn">Создать</button>
+
+<div class="hint">Попробуй написать: «футуристический город», «робот-повар», «лес в тумане»</div>
+
+<img id="img" />
+
+<script>
+document.getElementById("btn").onclick = async () => {
+  const prompt = document.getElementById("prompt").value.trim();
+  if (!prompt) { alert("Введите текст для генерации картинки"); return; }
+
+  const imgEl = document.getElementById("img");
+  imgEl.classList.remove("loaded");
+  imgEl.src = "";
+
+  try {
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await res.json();
+
+    if (data.image) {
+      imgEl.src = "data:image/png;base64," + data.image;
+      imgEl.onload = () => imgEl.classList.add("loaded");
+    } else {
+      alert("Ошибка при генерации: " + (data.error || "неизвестная"));
+    }
+  } catch (e) {
+    alert("Ошибка сети или сервера: " + e.message);
   }
-}
+};
+</script>
+
+</body>
+</html>
