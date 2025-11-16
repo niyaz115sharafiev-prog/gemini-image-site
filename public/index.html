@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Генерация картинок</title>
+  <meta charset="UTF-8" />
+  <title>Генерация картинок — Gemini</title>
 
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -15,6 +16,29 @@
       align-items: center;
       padding: 30px 20px;
       min-height: 100vh;
+      margin: 0;
+    }
+
+    header {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    header img {
+      width: 50px;
+      height: auto;
+      margin-right: 15px;
+    }
+
+    header h1 {
+      color: #00796b;
+      font-size: 28px;
+      margin: 0;
+      font-weight: 600;
     }
 
     h2 {
@@ -23,9 +47,16 @@
       margin-bottom: 20px;
     }
 
-    input {
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       width: 100%;
       max-width: 600px;
+    }
+
+    input {
+      width: 100%;
       padding: 12px 15px;
       font-size: 16px;
       border-radius: 8px;
@@ -35,7 +66,9 @@
       transition: border-color 0.3s;
     }
 
-    input:focus { border-color: #00796b; }
+    input:focus {
+      border-color: #00796b;
+    }
 
     button {
       padding: 12px 25px;
@@ -53,65 +86,99 @@
       transform: scale(1.05);
     }
 
-    #img {
-      margin-top: 20px;
-      width: 100%;
-      max-width: 600px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      opacity: 0;
-      transition: opacity 0.5s;
-    }
-
-    #img.loaded { opacity: 1; }
-
     .hint {
       margin-top: 10px;
       font-size: 14px;
       color: #555;
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .img-wrapper {
+      margin-top: 25px;
+      width: 100%;
+      max-width: 600px;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      display: flex;
+      justify-content: center;
+    }
+
+    #img {
+      border-radius: 12px;
+      max-width: 100%;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #img.loaded {
+      opacity: 1;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
     }
   </style>
 </head>
 <body>
 
-<h2>Создание картинки через Gemini</h2>
+  <header>
+    <img src="https://kiber-one.com/img/redesign/logo.jpg" alt="Логотип KIBERone">
+    <h1>KIBERone Gemini Генератор</h1>
+  </header>
 
-<input id="prompt" type="text" placeholder="Опиши картинку (например: кот в шапке Санты)">
-<button id="btn">Создать</button>
+  <h2>Создай картинку с помощью Gemini</h2>
 
-<div class="hint">Попробуй написать: «футуристический город», «робот-повар», «лес в тумане»</div>
+  <div class="input-container">
+    <input id="prompt" type="text" placeholder="Опиши картинку (например: кот в шапке Санты)" />
+    <button id="btn">Создать</button>
+  </div>
 
-<img id="img" />
+  <div class="hint">Попробуй: «футуристический город», «робот-повар», «лес в тумане»</div>
 
-<script>
-document.getElementById("btn").onclick = async () => {
-  const prompt = document.getElementById("prompt").value.trim();
-  if (!prompt) { alert("Введите текст для генерации картинки"); return; }
+  <div class="img-wrapper">
+    <img id="img" alt="Сгенерированное изображение" />
+  </div>
 
-  const imgEl = document.getElementById("img");
-  imgEl.classList.remove("loaded");
-  imgEl.src = "";
+  <footer>© 2025 KIBERone — все права защищены</footer>
 
-  try {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ prompt })
-    });
+  <script>
+    document.getElementById("btn").onclick = async () => {
+      const prompt = document.getElementById("prompt").value.trim();
+      if (!prompt) {
+        alert("Введите текст для генерации картинки");
+        return;
+      }
 
-    const data = await res.json();
+      const imgEl = document.getElementById("img");
+      imgEl.classList.remove("loaded");
+      imgEl.src = "";
 
-    if (data.image) {
-      imgEl.src = "data:image/png;base64," + data.image;
-      imgEl.onload = () => imgEl.classList.add("loaded");
-    } else {
-      alert("Ошибка при генерации: " + (data.error || "неизвестная"));
-    }
-  } catch (e) {
-    alert("Ошибка сети или сервера: " + e.message);
-  }
-};
-</script>
+      try {
+        const res = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
+        });
+        const data = await res.json();
+        if (data.image) {
+          imgEl.src = "data:image/png;base64," + data.image;
+          imgEl.onload = () => imgEl.classList.add("loaded");
+        } else {
+          alert("Ошибка при генерации: " + (data.error || "неизвестная"));
+        }
+      } catch (e) {
+        alert("Ошибка сети или сервера: " + e.message);
+      }
+    };
+  </script>
 
 </body>
 </html>
