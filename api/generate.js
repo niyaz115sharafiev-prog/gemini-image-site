@@ -17,7 +17,13 @@ export default async function handler(req, res) {
     );
 
     const json = await response.json();
-    const base64 = json.generatedImages?.[0]?.imageData;
+
+    // Проверка на существование картинки
+    if (!json.generatedImages || !json.generatedImages[0] || !json.generatedImages[0].imageData) {
+      return res.status(500).json({ error: "Картинка не сгенерирована" });
+    }
+
+    const base64 = json.generatedImages[0].imageData;
 
     res.status(200).json({ image: base64 });
   } catch (error) {
