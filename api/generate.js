@@ -1,13 +1,11 @@
-const fetch = require('node-fetch');
-
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
-    const { prompt } = req.body;
+    const { prompt } = await req.json();
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
 
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateImage?key=" + apiKey,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateImage?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -19,12 +17,11 @@ module.exports = async function handler(req, res) {
     );
 
     const json = await response.json();
-
     const base64 = json.generatedImages?.[0]?.imageData;
 
     res.status(200).json({ image: base64 });
   } catch (error) {
-    console.log("Ошибка:", error);
+    console.error("Ошибка:", error);
     res.status(500).json({ error: "server error" });
   }
 }
